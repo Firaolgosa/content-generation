@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "status": "placeholder",
+  "title": "The Jebena",
+  "title_native": "ጀበናው",
+  "logline": "PLACEHOLDER story for testing the pipeline: a grandchild remembers the coffee ceremony a (fictional) grandmother led every morning.",
+  "audience": "PLACEHOLDER - to be replaced with the real audience (e.g. cousins in the diaspora, watching on their phones in the family group chat).",
+  "intent": "PLACEHOLDER - to be replaced (e.g. they feel the warmth of being called to coffee at home, and want to call their grandmother).",
+  "language": "am",
+
+  "models": {
+    "text": "gemini-3.8-flash",
+    "tts": "gemini-3.8-flash-tts",
+    "image": "@cf/black-forest-labs/flux-2-klein-4b",
+    "image_fallback": "@cf/black-forest-labs/flux-1-schnell",
+    "video": "Wan-AI/Wan2.2-TI2V-5B-Diffusers",
+    "music": "ACE-Step/acestep-v15-turbo"
+  },
+
+  "style": {
+    "block": "Warm painterly documentary illustration, soft golden morning light, muted earth palette of ochre, umber and deep green, gentle film grain, subject centred in the frame, no text or lettering",
+    "negative": "text, letters, watermark, extra fingers, deformed hands, blurry face",
+    "reference_prompt": "Style frame: the inside of a simple Ethiopian highland home at sunrise, a low wooden stool, a clay jebena coffee pot on a woven grass mat, fresh green grass scattered on the floor, light through a small window",
+    "reference_seed": 1001
+  },
+
+  "characters": [
+    {
+      "id": "grandmother",
+      "description": "An elderly Ethiopian woman in her seventies, slim, warm brown skin, deep smile lines around the eyes, short grey hair under a white headscarf, wearing a white cotton netela shawl with a thin woven tibeb border over a white habesha dress",
+      "sheet_seed": 2001,
+      "real_person": false
+    }
+  ],
+
+  "voice": {
+    "voice": "Sulafat",
+    "style": "warm, unhurried, like an adult quietly remembering their grandmother at home",
+    "real_person": false
+  },
+
+  "render": {
+    "fps": 24,
+    "horizontal": { "width": 1920, "height": 1080 },
+    "vertical": { "width": 1080, "height": 1920 },
+    "keyframe": { "width": 1536, "height": 864 },
+    "wan": {
+      "width": 832,
+      "height": 480,
+      "num_frames": 121,
+      "steps": 30,
+      "guidance": 5.0,
+      "negative": "morphing, warping, flicker, distorted face, extra limbs, fast motion, text"
+    }
+  },
+
+  "mix": {
+    "narration_lead_s": 0.5,
+    "narration_tail_s": 0.8,
+    "music_gain_db": -6,
+    "duck": { "threshold": 0.02, "ratio": 6, "attack_ms": 300, "release_ms": 1500 },
+    "loudness": { "integrated_lufs": -14, "true_peak_db": -1, "lra": 11 }
+  },
+
+  "music": {
+    "cues": [
+      {
+        "id": "theme",
+        "from_shot": "s01",
+        "to_shot": "s08",
+        "caption": "Gentle Ethiopian-inspired acoustic underscore, a solo krar plucking a slow pentatonic tizita melody over warm soft string pads and a quiet masenqo drone, intimate, nostalgic, sparse, no percussion, instrumental",
+        "bpm": 72,
+        "keyscale": "D minor",
+        "seed": 4242,
+        "candidates": 3,
+        "chosen": null,
+        "reason": "Placeholder until the three candidates are auditioned under the narration."
+      }
+    ]
+  },
+
+  "end_card": {
+    "duration_s": 3,
+    "lines": [
+      "ጀበናው · The Jebena",
+      "Made with AI · በሰው ሰራሽ አስተውሎት የተሰራ",
+      "Voice: Gemini TTS · Images: FLUX.2 klein · Motion: Wan 2.2 · Music: ACE-Step 1.5",
+      "Edited in code with FFmpeg"
+    ]
+  },
+
+  "shots": [
+    {
+      "id": "s01",
+      "duration_s": 8,
+      "beat": "Where we are",
+      "reason": "Establishing shot: tells the viewer this is a highland village at dawn before we go inside.",
+      "shot_size": "extreme_wide",
+      "characters": [],
+      "image_prompt": "A small Ethiopian highland village of round thatched houses at dawn, mist in the valley, eucalyptus trees, one thin line of smoke rising from a chimney in the centre",
+      "seed": 101,
+      "motion_prompt": "Mist drifts slowly through the valley, the smoke rises gently, the camera pushes in very slowly.",
+      "camera": "push_in",
+      "video": "wan",
+      "vertical_mode": "fit_blur",
+      "narration": "ጠዋት ሲነጋ፣ መንደራችን በጭጋግ ተሸፍኖ ነበር።",
+      "subtitle": "At dawn, our village lay wrapped in mist."
+    },
+    {
+      "id": "s02",
+      "duration_s": 7,
+      "beat": "Her ritual",
+      "reason": "Introduces the grandmother through what she does, not what she looks like.",
+      "shot_size": "medium",
+      "characters": ["grandmother"],
+      "image_prompt": "The grandmother sits on a low stool roasting green coffee beans in a flat iron pan over a small charcoal stove, inside her home",
+      "seed": 102,
+      "motion_prompt": "She slowly stirs the beans with a small stick, thin smoke curls upward, the camera stays still.",
+      "camera": "static",
+      "video": "wan",
+      "vertical_mode": "fit_blur",
+      "narration": "አያቴ ሁልጊዜ ቡናውን በራሷ እጅ ትቆላ ነበር።",
+      "subtitle": "My grandmother always roasted the coffee with her own hands."
+    },
+    {
+      "id": "s03",
+      "duration_s": 7,
+      "beat": "The smell",
+      "reason": "A sensory close-up: the smell is the memory, so we stay on the beans and smoke.",
+      "shot_size": "close_up",
+      "characters": [],
+      "image_prompt": "Close-up of dark roasted coffee beans glistening in a flat iron pan, fragrant smoke rising, glowing charcoal below",
+      "seed": 103,
+      "motion_prompt": "Smoke rises and swirls softly above the beans, the camera pushes in gently.",
+      "camera": "push_in",
+      "video": "kenburns",
+      "vertical_focus_x": 0.5,
+      "narration": "የተቆላው ቡና ሽታ ቤቱን ሁሉ ይሞላው ነበር።",
+      "subtitle": "The smell of roasted coffee filled the whole house."
+    },
+    {
+      "id": "s04",
+      "duration_s": 7,
+      "beat": "The heartbeat",
+      "reason": "Insert of the pounding hands; the rhythm becomes the film's heartbeat motif.",
+      "shot_size": "insert",
+      "characters": ["grandmother"],
+      "image_prompt": "Close-up of the grandmother's weathered hands pounding roasted coffee in a wooden mortar (mukecha) with a metal pestle",
+      "seed": 104,
+      "motion_prompt": "Her hands lift and lower the pestle in a slow steady rhythm, the camera stays still.",
+      "camera": "static",
+      "video": "wan",
+      "vertical_mode": "fit_blur",
+      "narration": "በሙቀጫው ስትወቅጠው፣ ድምፁ እንደ ልብ ምት ነበር።",
+      "subtitle": "When she pounded it in the mortar, it sounded like a heartbeat."
+    },
+    {
+      "id": "s05",
+      "duration_s": 7,
+      "beat": "Silence before the pour",
+      "reason": "The pour is the moment of attention; a tight shot makes the viewer hold their breath too.",
+      "shot_size": "medium_close",
+      "characters": ["grandmother"],
+      "image_prompt": "The grandmother lifts a black clay jebena and pours a thin stream of coffee into small white handleless cups (sini) on a wooden tray",
+      "seed": 105,
+      "motion_prompt": "A slow thin stream of coffee pours into the cup, steam rises, the camera stays still.",
+      "camera": "static",
+      "video": "wan",
+      "vertical_mode": "fit_blur",
+      "narration": "ጀበናውን ስታነሳ፣ ሁላችንም ዝም እንል ነበር።",
+      "subtitle": "When she lifted the jebena, we all fell silent."
+    },
+    {
+      "id": "s06",
+      "duration_s": 8,
+      "beat": "Why it mattered",
+      "reason": "Wide shot of the gathering carries the theme: coffee is the reason, togetherness is the point.",
+      "shot_size": "wide",
+      "characters": ["grandmother"],
+      "image_prompt": "A family of several generations sitting on low stools in a circle around the grandmother and her coffee tray, frankincense smoke, morning light from a window",
+      "seed": 106,
+      "motion_prompt": "Incense smoke drifts across the room, the camera pans slowly to the right.",
+      "camera": "pan_right",
+      "video": "kenburns",
+      "vertical_focus_x": 0.5,
+      "narration": "«ቡና ሰበብ ነው፤ ዋናው መገናኘት ነው» ትል ነበር።",
+      "subtitle": "\"Coffee is just the excuse,\" she used to say. \"What matters is being together.\""
+    },
+    {
+      "id": "s07",
+      "duration_s": 7,
+      "beat": "Three rounds",
+      "reason": "Her face, finally close, as the three rounds name the ritual's patience.",
+      "shot_size": "close_up",
+      "characters": ["grandmother"],
+      "image_prompt": "Close-up portrait of the grandmother smiling softly, steam from a coffee cup in the foreground, warm window light on her face",
+      "seed": 107,
+      "motion_prompt": "She blinks and her smile deepens slightly, steam drifts upward, the camera pushes in very slowly.",
+      "camera": "push_in",
+      "video": "kenburns",
+      "vertical_focus_x": 0.5,
+      "narration": "አቦል፣ ቶና፣ በረካ፤ ሦስቱ ዙር ሳያልቅ ማንም አይነሳም ነበር።",
+      "subtitle": "Abol, tona, bereka: nobody rose before all three rounds were poured."
+    },
+    {
+      "id": "s08",
+      "duration_s": 8,
+      "beat": "What remains",
+      "reason": "Closing image: the empty stool and the jebena turn the memory into absence and love.",
+      "shot_size": "wide",
+      "characters": [],
+      "image_prompt": "An empty low wooden stool beside a clay jebena on a woven grass mat, late afternoon light, a single coffee cup still on the tray",
+      "seed": 108,
+      "motion_prompt": "Dust floats in the light, the camera pulls back slowly.",
+      "camera": "pull_out",
+      "video": "kenburns",
+      "vertical_focus_x": 0.5,
+      "narration": "ዛሬም ጀበና ባየሁ ቁጥር፣ ድምጿን እሰማለሁ።",
+      "subtitle": "Even now, whenever I see a jebena, I hear her voice."
+    }
+  ]
+}

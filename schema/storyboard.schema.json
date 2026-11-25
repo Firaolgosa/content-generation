@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/heritage-short/storyboard.schema.json",
+  "title": "Heritage Short storyboard",
+  "description": "The single contract between every pipeline stage. Every prompt, seed and model choice lives here, not in code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "title", "logline", "audience", "intent", "language", "models", "style", "voice", "render", "mix", "music", "end_card", "shots"],
+  "properties": {
+    "version": { "const": 1 },
+    "status": { "enum": ["placeholder", "draft", "locked"], "description": "placeholder = pipeline test content, not the real story" },
+    "title": { "type": "string", "minLength": 1 },
+    "title_native": { "type": "string" },
+    "logline": { "type": "string", "minLength": 10 },
+    "audience": { "type": "string", "minLength": 10, "description": "Who watches, where (phone? family chat?)" },
+    "intent": { "type": "string", "minLength": 10, "description": "What they should feel or understand at the end" },
+    "language": { "type": "string", "pattern": "^[a-z]{2,3}$", "description": "ISO 639 code of the narration language" },
+
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "tts", "image", "image_fallback", "video", "music"],
+      "properties": {
+        "text": { "type": "string" },
+        "tts": { "type": "string" },
+        "image": { "type": "string" },
+        "image_fallback": { "type": "string" },
+        "video": { "type": "string" },
+        "music": { "type": "string" }
+      }
+    },
+
+    "style": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["block", "reference_prompt", "reference_seed"],
+      "properties": {
+        "block": { "type": "string", "minLength": 10, "description": "Appended to every image prompt (palette, light, medium)" },
+        "negative": { "type": "string" },
+        "reference_prompt": { "type": "string", "minLength": 10, "description": "Golden style reference frame; every keyframe is conditioned on it" },
+        "reference_seed": { "$ref": "#/$defs/seed" }
+      }
+    },
+
+    "characters": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description", "sheet_seed", "real_person"],
+        "properties": {
+          "id": { "$ref": "#/$defs/slug" },
+          "description": { "type": "string", "minLength": 10, "description": "Fixed physical description reused verbatim in every prompt" },
+          "sheet_seed": { "$ref": "#/$defs/seed" },
+          "real_person": { "type": "boolean", "description": "true if this depicts or voices a real person" },
+          "consent_ref": { "type": "string", "description": "Anchor in ETHICS.md recording consent, e.g. 'consent-grandmother'. Required when real_person is true." }
+        },
+        "if": { "properties": { "real_person": { "const": true } } },
+        "then": { "required": ["consent_ref"] }
+      }
+    },
+
+    "voice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["voice", "style"],
+      "properties": {
+        "voice": { "type": "string", "description": "Prebuilt Gemini TTS voice name, e.g. Sulafat" },
+        "style": { "type": "string", "maxLength": 200, "description": "Short delivery instruction, e.g. 'warm, unhurried, like telling a story at home'" },
+        "real_person": { "type": "boolean", "default": false },
+        "consent_ref": { "type": "string" }
+      }
+    },
+
+    "render": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fps", "horizontal", "vertical", "keyframe", "wan"],
+      "properties": {
+        "fps": { "type": "integer", "enum": [24, 25, 30] },
+        "horizontal": { "$ref": "#/$defs/size" },
+        "vertical": { "$ref": "#/$defs/size" },
+        "keyframe": { "$ref": "#/$defs/size" },
+        "wan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "height", "num_frames", "steps", "guidance"],
+          "properties": {
+            "width": { "type": "integer", "multipleOf": 32 },
+            "height": { "type": "integer", "multipleOf": 32 },
+            "num_frames": { "type": "integer", "minimum": 17, "maximum": 121, "description": "Must be 4k+1" },
+            "steps": { "type": "integer", "minimum": 4, "maximum": 60 },
+            "guidance": { "type": "number", "minimum": 1, "maximum": 10 },
+            "negative": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "mix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["narration_lead_s", "narration_tail_s", "music_gain_db", "duck", "loudness"],
+      "properties": {
+        "narration_lead_s": { "type": "number", "minimum": 0, "maximum": 3 },
+        "narration_tail_s": { "type": "number", "minimum": 0, "maximum": 3 },
+        "music_gain_db": { "type": "number", "minimum": -30, "maximum": 6 },
+        "duck": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["threshold", "ratio", "attack_ms", "release_ms"],
+          "properties": {
+            "threshold": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+            "ratio": { "type": "number", "minimum": 1, "maximum": 20 },
+            "attack_ms": { "type": "number", "minimum": 0.01, "maximum": 2000 },
+            "release_ms": { "type": "number", "minimum": 0.01, "maximum": 9000 }
+          }
+        },
+        "loudness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["integrated_lufs", "true_peak_db", "lra"],
+          "properties": {
+            "integrated_lufs": { "type": "number", "minimum": -30, "maximum": -8 },
+            "true_peak_db": { "type": "number", "minimum": -9, "maximum": 0 },
+            "lra": { "type": "number", "minimum": 1, "maximum": 20 }
+          }
+        }
+      }
+    },
+
+    "music": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cues"],
+      "properties": {
+        "cues": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "from_shot", "to_shot", "caption", "bpm", "keyscale", "seed", "candidates"],
+            "properties": {
+              "id": { "$ref": "#/$defs/slug" },
+              "from_shot": { "$ref": "#/$defs/slug" },
+              "to_shot": { "$ref": "#/$defs/slug" },
+              "caption": { "type": "string", "minLength": 10, "maxLength": 512, "description": "Style, mood, instruments, texture. No tempo/key here." },
+              "bpm": { "type": "integer", "minimum": 30, "maximum": 300 },
+              "keyscale": { "type": "string" },
+              "seed": { "$ref": "#/$defs/seed" },
+              "candidates": { "type": "integer", "minimum": 1, "maximum": 8 },
+              "chosen": { "type": ["integer", "null"], "minimum": 0, "description": "Index of the chosen candidate; null = use placeholder bed" },
+              "reason": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "end_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["duration_s", "lines"],
+      "properties": {
+        "duration_s": { "type": "number", "minimum": 2, "maximum": 6 },
+        "lines": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "type": "string" } }
+      }
+    },
+
+    "shots": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "duration_s", "reason", "shot_size", "image_prompt", "seed", "motion_prompt", "camera", "video", "narration", "subtitle"],
+        "properties": {
+          "id": { "$ref": "#/$defs/slug" },
+          "duration_s": { "type": "number", "minimum": 3, "maximum": 15, "description": "Planned length; extended automatically if narration runs longer" },
+          "reason": { "type": "string", "minLength": 5, "description": "Why this shot exists, in one sentence" },
+          "beat": { "type": "string" },
+          "shot_size": { "enum": ["extreme_wide", "wide", "medium", "medium_close", "close_up", "extreme_close_up", "insert"] },
+          "characters": { "type": "array", "items": { "$ref": "#/$defs/slug" }, "maxItems": 2 },
+          "image_prompt": { "type": "string", "minLength": 10, "description": "Subject + place + composition. The style block and character descriptions are appended in code." },
+          "seed": { "$ref": "#/$defs/seed" },
+          "motion_prompt": { "type": "string", "minLength": 5, "description": "Motion and camera only; the keyframe already holds the subject" },
+          "camera": { "enum": ["static", "push_in", "pull_out", "pan_left", "pan_right", "tilt_up", "tilt_down"] },
+          "video": { "enum": ["wan", "kenburns"], "description": "wan = request an image-to-video clip; kenburns = animate the still in FFmpeg" },
+          "vertical_focus_x": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.5, "description": "Horizontal centre of the 9:16 crop" },
+          "vertical_mode": { "enum": ["crop", "fit_blur"], "default": "crop", "description": "9:16 framing: crop a vertical strip, or fit the whole frame over a blurred fill" },
+          "narration": { "type": "string", "description": "Narration line in the film language (may be empty for a silent beat)" },
+          "subtitle": { "type": "string", "description": "English subtitle for the narration line" }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,31}$" },
+    "seed": { "type": "integer", "minimum": 0, "maximum": 2147483647 },
+    "size": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 256, "maximum": 3840, "multipleOf": 2 },
+        "height": { "type": "integer", "minimum": 256, "maximum": 3840, "multipleOf": 2 }
+      }
+    }
+  }
+}
