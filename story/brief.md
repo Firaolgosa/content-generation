@@ -1,24 +1,26 @@
 # Story brief (input to `make draft`)
 
-Plain language is fine. Keep private details (full names, addresses, health) out of it, because
-this text is sent to the Gemini free tier.
-
 ## Whose story, and what happened
-TODO: three to five sentences, one picture per beat.
+In 1950 E.C. (Ethiopian Calendar) in Bekoji, my grandfather and his friend were travelling to see another young woman. Because night fell late on the road, they stopped at a family's home to spend the night. There, by the warmth of the hearth, my grandfather met my grandmother for the first time. Moved by her grace and warmth, he chose her instead of continuing his original journey, and that one night of hospitality became the beginning of our family.
 
 ## The people in it
-TODO: who appears or is voiced; real or composite; consent recorded in ETHICS.md? (yes/no)
-Physical description to keep consistent (age, build, hair, clothing):
+- Grandfather (composite/stylized character, ~25 years old, 1950s Ethiopian highland attire)
+- Grandmother (composite/stylized character, ~21 years old, 1950s Ethiopian highland attire)
+- Grandfather's travelling friend (appears in wide shots only)
+- Real person likeness/voice used? No (`real_person: false`). True family story, depicted with painterly illustration and prebuilt Gemini TTS voice.
 
 ## The place and time
-TODO: e.g. Dessie market, 1970s, early morning
+Bekoji (Arsi highlands, Ethiopia), 1950 E.C. (late 1950s), cold highland night turning to misty morning.
 
 ## Audience and intent
-- Who watches, and where: TODO
-- What they should feel at the end: TODO
+- Who watches, and where: My family (parents, aunts, uncles, cousins), watching on their phones in the family group chat.
+- What they should feel at the end: Warmth, pride, and nostalgia remembering how their parents and grandparents met.
 
 ## Words or phrases that must be in the narration (Amharic)
-TODO: a proverb, a saying, the way they always said it
+- 1950 ዓመተ ምሕረት (1950 E.C.)
+- በቆጂ (Bekoji)
+- የእንግዳ ተቀባይነት (hospitality)
 
 ## Look and sound
-TODO: e.g. warm hand-painted look, krar and masenqo, no drums
+- Warm painterly documentary illustration, firelight and misty highland dawn, ochre/umber/deep green palette.
+- Gentle Ethiopian acoustic underscore: slow krar and quiet masenqo, no percussion.

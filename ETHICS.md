@@ -19,7 +19,7 @@ Record consent **before** generating anything of a real person.
 - **They can withdraw:** yes, by telling me; I will take the film down
 -->
 
-_No real person is depicted or voiced yet. The current storyboard is a fictional placeholder._
+_This film depicts a true family story from Bekoji (1950 E.C.) using stylized painterly illustrations and a prebuilt Gemini TTS voice (`Sulafat`). No real person's face, photograph, likeness, or cloned voice is used (`"real_person": false` for all characters and voice). Private full names are omitted from all prompts sent to free-tier APIs._
 
 ## Licences of models and outputs
 
