@@ -69,11 +69,14 @@ def _post(url: str, headers: dict[str, str], **kwargs: Any) -> httpx.Response:
 
 
 def flux_schnell(prompt: str, *, model: str, steps: int = 4, seed: int | None = None) -> bytes:
-    """Text-to-image, JSON API. Returns image bytes (JPEG)."""
+    """Text-to-image, JSON API. Returns image bytes (JPEG).
+
+    Note: Cloudflare's flux-1-schnell schema rejects `seed` (400 code 5006), so `seed`
+    is accepted for call-site compatibility but omitted from the request payload.
+    """
+    _ = seed
     url, headers = _url(model)
     payload: dict[str, Any] = {"prompt": prompt[:2048], "steps": steps}
-    if seed is not None:
-        payload["seed"] = seed
     return _parse(_post(url, headers, json=payload))
 
 

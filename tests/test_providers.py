@@ -35,7 +35,7 @@ def test_schnell_sends_json_and_decodes_image(monkeypatch):
     assert out == PNG
     assert seen["url"].endswith("/accounts/acct/ai/run/@cf/black-forest-labs/flux-1-schnell")
     assert seen["headers"]["Authorization"] == "Bearer tok"
-    assert seen["json"] == {"prompt": "a pot", "steps": 4, "seed": 3}
+    assert seen["json"] == {"prompt": "a pot", "steps": 4}
 
 
 def test_flux2_sends_multipart_with_references(monkeypatch):
