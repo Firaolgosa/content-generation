@@ -20,7 +20,18 @@ stage generated from `runs.jsonl` by `make costs`.
 own timing. The list-price equivalent uses the prices above.
 
 <!-- costs:begin -->
-_Run `make costs` after the first pipeline run to fill this table._
+| stage | ok | retries | failed | cache hits | latency total (s) | median (s) | GPU min | list-price equiv. (USD) |
+|---|---|---|---|---|---|---|---|---|
+| smoke | 10 | 8 | 8 | 0 | 66.5 | 5.28 | 0.0 | 0.0 |
+| narration | 9 | 0 | 0 | 9 | 123.0 | 4.67 | 0.0 | 0.0 |
+| references | 3 | 0 | 0 | 6 | 22.6 | 7.05 | 0.0 | 0.0026 |
+| keyframes | 9 | 0 | 0 | 9 | 78.8 | 8.65 | 0.0 | 0.0185 |
+| shots | 2 | 0 | 4 | 0 | 643.3 | 321.65 | 0.0 | 0.0 |
+| music | 6 | 0 | 0 | 3 | 774.3 | 16.7 | 0.8 | 0.0047 |
+| assemble | 5 | 0 | 0 | 0 | 67.2 | 29.41 | 0.0 | 0.0 |
+| pipeline | 2 | 0 | 0 | 0 | 263.7 | 131.85 | 0.0 | 0.0 |
+
+Total list-price equivalent: **$0.0258** (actual spend: $0, free tiers).
 <!-- costs:end -->
 
 ## Notes

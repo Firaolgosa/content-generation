@@ -56,5 +56,11 @@ Format: **symptom** → **cause** → **tried** → **resolution** → **evidenc
 - **Resolution:** Updated `_kaggle()` in [pipeline/kaggle_jobs.py](pipeline/kaggle_jobs.py) to automatically map `KAGGLE_KEY` -> `KAGGLE_API_TOKEN` in the subprocess environment whenever `KAGGLE_KEY` starts with `KGAT_`.
 - **Evidence:** `runs.jsonl` (`stage=smoke`, `item=kaggle`, `status=ok`, `detail="auth ok (3 lines)"`).
 
+### F8. Wan 2.2 TI2V-5B hit CUDA OutOfMemoryError on Kaggle Tesla T4 (2026-11-26)
+- **Symptom:** All 4 Wan 2.2 jobs (`s02`, `s04`, `s05`, `s07`) failed on Kaggle's 14.56 GiB Tesla T4 with `OutOfMemoryError: CUDA out of memory. Tried to allocate 108.00 MiB... 14.28 GiB allocated by PyTorch`.
+- **Cause:** `enable_model_cpu_offload()` keeps the entire 5B fp16 transformer on GPU during forward passes, which plus 121-frame 832×480 activations exceeds 14.56 GiB.
+- **Resolution:** Switched `kaggle/wan_i2v.py` to `enable_sequential_cpu_offload()`, enabled `vae.enable_slicing()` + `expandable_segments:True`, and reduced draft `num_frames` from `121` to `81` (`steps: 24`) in `storyboard.json`.
+- **Evidence:** `runs.jsonl` (`run_id: 20261126T065022Z-ae1b`, `stage=shots`, `s02`/`s04`/`s05`/`s07` `status=failed`).
+
 <!-- Next entries: quota hits, OOM on the T4, identity drift across keyframes, Amharic
      pronunciation errors in TTS, black frames from fp16 on Turing, ... -->

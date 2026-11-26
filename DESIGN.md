@@ -66,7 +66,9 @@ Every shot carries a `reason` in `storyboard.json`.
 | TODO | | |
 
 **Insights and what changed:**
-- TODO
+- **Audience feedback (visual review of rough cut):**
+  1. `s07_50bda4c118a1.png` had a diffusion artifact where the young man's head was cut off at the neck. Fixed by updating `s07`'s prompt to explicitly frame his full head, face, and shoulders (`seed: 2957` -> `s07_40b851668d4b.png`).
+  2. The `grandmother` character looked too old because the word `"grandmother"` in the prompt biased FLUX toward an older woman. Updated `characters[1].description` (`sheet_seed: 3051`) and `s04`/`s06`/`s08` prompts to describe a **17-year-old Ethiopian teenage girl / young woman** without using `"grandmother"` in the text prompt (`s06_016b1e61b700.png`). Hash-based caching regenerated only `char-grandmother`, `s04`, `s06`, `s07`, and `s08`.
 
 ## Decisions log
 

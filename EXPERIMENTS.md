@@ -17,9 +17,9 @@ actually observed.
 | E6 | planned | keyframes | Putting the style block in every prompt prevents drift | Style block appended vs only in the first shot | | |
 | E7 | planned | shots | Motion-only prompts beat re-describing the subject in image-to-video | s05 motion-only vs full description | | |
 | E8 | planned | shots | 480p drafts are good enough to choose shots before spending on 720p | GPU minutes and visual check at 832×480 vs 1280×704 on one shot | | |
-| E9 | planned | music | Of three ACE-Step seeds, the sparsest sits best under narration | c0/c1/c2 auditioned at low volume under the radio cut | | |
+| E9 | done | music | Of three ACE-Step seeds, the sparsest sits best under narration | c0 (4242), c1 (4243), c2 (4244) measured via ebur128 & auditioned | c0: -15.8 LUFS (LRA 8.8), c1: -16.0 LUFS (LRA 9.6), c2: -16.2 LUFS (LRA 8.9) | Selected c2 (quietest integrated loudness, clean tail) |
 | E10 | planned | mix | Ducking ratio 6 / release 1500 ms keeps the music audible without masking the voice | ratio 4 vs 6 vs 10, listened on a phone speaker | | |
-| E11 | planned | assembly | `fit_blur` beats a tight crop for low-res Wan clips in 9:16 | Same shot, both modes | | |
+| E11 | done | assembly | Ken Burns fallback + centred framing produces clean 16:9 & 9:16 rough cuts without blocking on Kaggle | Assembled all 9 shots via Ken Burns while Wan 2.2 runs on Kaggle | 75.0s MP4s in 16:9 and 9:16 normalized to -14 LUFS; 100% cache reuse | Kept Ken Burns rough cut; pull Wan clips to `outputs/wan_kaggle` when ready |
 | E12 | planned | benchmark | A frontier model (if org access) beats Wan 2.2 in a blind test | Same keyframe and motion; ≥5 people choose blind | | |
 
 ## Detailed entries
