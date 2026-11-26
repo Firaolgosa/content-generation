@@ -5,9 +5,10 @@ A small film studio in code. One file, [`storyboard.json`](storyboard.json), des
 music cues. The pipeline turns it into keyframes, moving shots, a score, narration and a
 finished edit in 16:9 and 9:16, and logs every model call to `runs.jsonl`.
 
-> **Status:** the pipeline works end to end. `storyboard.json` still holds a **placeholder**
-> story (`"status": "placeholder"`, no real people) that is used to test every stage. The real
-> story replaces it, with consent recorded in [ETHICS.md](ETHICS.md) first.
+> **Status:** the pipeline runs end to end for **"The Night in Bekoji" (`የበቆጂው ምሽት`)**,
+> a 75-second Amharic heritage short set in 1950 E.C. Bekoji. All stages are logged in
+> [runs.jsonl](runs.jsonl), and stylized characters are used with no real faces or cloned voices
+> ([ETHICS.md](ETHICS.md)).
 
 ## One command
 
@@ -17,6 +18,8 @@ cp .env.example .env        # add your keys (see below)
 make install                # uv sync; FFmpeg must be on PATH
 make film                   # validate → narration → keyframes → shots → music → assemble
 ```
+
+*(If `uv` is not on your `PATH`, use `.venv/bin/python -m pipeline.run` directly.)*
 
 Output: `outputs/final/<title>_16x9.mp4`, `<title>_9x16.mp4`, `subtitles_en.srt` and
 `timeline.json`.

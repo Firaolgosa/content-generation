@@ -4,27 +4,53 @@ One file, `storyboard.json`, is the contract between every stage. Each stage is 
 module that reads the storyboard, checks its cache, calls one kind of model, and writes files
 under `outputs/` whose names contain a hash of their inputs. `make film` runs them in order.
 
-```
-                 schema/storyboard.schema.json
-                              │ validates (+ cross-field rules, consent gate)
-                              ▼
- story/brief.md ──script──▶ storyboard.json ───────────────────────────────────────────┐
-   (Gemini Flash)              │                                                       │
-          ┌────────────────────┼───────────────────┬──────────────────────┐            │
-          ▼                    ▼                   ▼                      ▼            │
-     narration            keyframes             shots                  music           │
-   Gemini 3.8 TTS     FLUX.2 klein (CF AI)   Wan 2.2 TI2V-5B        ACE-Step 1.5        │
-   1 WAV / shot       refs → 1 PNG / shot    Kaggle T4, jobs.json   Kaggle, jobs.json   │
-          │                    │                   │                      │            │
-          │                    └──── keyframe ─────┘                      │            │
-          ▼                                        ▼                      ▼            ▼
-      timeline  ──────────────────────────────▶  assemble (FFmpeg + Pillow)  ◀── end card,
-   (cut to the voice)                          segments · duck · loudnorm ·      subtitles
-                                               subtitles · 16:9 + 9:16
-                                                         │
-                                                         ▼
-                                    outputs/final/*.mp4, subtitles_en.srt, timeline.json
-     every model call / cache hit / retry ──▶ runs.jsonl ──▶ pipeline/costs.py ──▶ COSTS.md
+```mermaid
+flowchart TD
+    subgraph Pre["Pre-Production & Contract"]
+        BRIEF["story/brief.md"] -->|Gemini Flash| SB["storyboard.json"]
+        SCHEMA["schema/storyboard.schema.json"] -->|validates schema & cross-fields| SB
+        ETHICS["ETHICS.md"] -->|consent gate| SB
+    end
+
+    subgraph Gen["Generation Stages (SHA-256 Hash-Cached)"]
+        NARR["narration: Gemini 3.8 Flash TTS\n1 WAV per shot"]
+        REFS["references: FLUX.2 klein 4B\nstyle frame + character sheets"]
+        KEY["keyframes: FLUX.2 klein 4B\n1 PNG per shot (CF Workers AI)"]
+        SHOTS["shots: Wan 2.2 TI2V-5B\nKaggle T4 / Ken Burns fallback"]
+        MUSIC["music: ACE-Step 1.5 turbo\nKaggle T4 (3 candidates)"]
+    end
+
+    SB --> NARR
+    SB --> REFS --> KEY
+    SB --> KEY --> SHOTS
+    SB --> SHOTS
+    SB --> MUSIC
+
+    subgraph Post["Post-Production & Assembly"]
+        TL["timeline.py\ncut to voice timing"]
+        ASM["assemble.py (FFmpeg + Pillow)\nsegments, sidechain duck, -14 LUFS,\nburned subtitles, AI end card"]
+        OUT["outputs/final/\n16:9 MP4, 9:16 MP4,\nsubtitles_en.srt, timeline.json"]
+    end
+
+    NARR --> TL
+    TL --> ASM
+    SHOTS --> ASM
+    MUSIC --> ASM
+    SB -->|end card & mix settings| ASM
+    ASM --> OUT
+
+    subgraph Obs["Observability & Cost Tracking"]
+        LOG["runs.jsonl\nevery call, retry, cache_hit"]
+        COSTS["pipeline/costs.py -> COSTS.md"]
+    end
+
+    NARR -.-> LOG
+    REFS -.-> LOG
+    KEY -.-> LOG
+    SHOTS -.-> LOG
+    MUSIC -.-> LOG
+    ASM -.-> LOG
+    LOG --> COSTS
 ```
 
 ## Stages and their contracts

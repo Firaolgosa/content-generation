@@ -23,15 +23,15 @@ own timing. The list-price equivalent uses the prices above.
 | stage | ok | retries | failed | cache hits | latency total (s) | median (s) | GPU min | list-price equiv. (USD) |
 |---|---|---|---|---|---|---|---|---|
 | smoke | 10 | 8 | 8 | 0 | 66.5 | 5.28 | 0.0 | 0.0 |
-| narration | 9 | 0 | 0 | 9 | 123.0 | 4.67 | 0.0 | 0.0 |
-| references | 3 | 0 | 0 | 6 | 22.6 | 7.05 | 0.0 | 0.0026 |
-| keyframes | 9 | 0 | 0 | 9 | 78.8 | 8.65 | 0.0 | 0.0185 |
+| narration | 9 | 0 | 0 | 18 | 123.0 | 4.67 | 0.0 | 0.0 |
+| references | 4 | 0 | 0 | 11 | 32.5 | 8.01 | 0.0 | 0.0034 |
+| keyframes | 13 | 0 | 0 | 23 | 112.6 | 8.44 | 0.0 | 0.027 |
 | shots | 2 | 0 | 4 | 0 | 643.3 | 321.65 | 0.0 | 0.0 |
-| music | 6 | 0 | 0 | 3 | 774.3 | 16.7 | 0.8 | 0.0047 |
-| assemble | 5 | 0 | 0 | 0 | 67.2 | 29.41 | 0.0 | 0.0 |
-| pipeline | 2 | 0 | 0 | 0 | 263.7 | 131.85 | 0.0 | 0.0 |
+| music | 6 | 0 | 0 | 6 | 774.3 | 16.7 | 0.8 | 0.0047 |
+| assemble | 7 | 0 | 0 | 0 | 127.9 | 29.41 | 0.0 | 0.0 |
+| pipeline | 3 | 0 | 0 | 0 | 349.5 | 121.1 | 0.0 | 0.0 |
 
-Total list-price equivalent: **$0.0258** (actual spend: $0, free tiers).
+Total list-price equivalent: **$0.0351** (actual spend: $0, free tiers).
 <!-- costs:end -->
 
 ## Notes
