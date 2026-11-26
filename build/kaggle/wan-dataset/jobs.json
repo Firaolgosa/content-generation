@@ -1,0 +1,68 @@
+{
+  "jobs": [
+    {
+      "shot_id": "s02",
+      "key": "e9800739e7f4",
+      "keyframe": "s02_438513c1951f.png",
+      "output": "s02_e9800739e7f4.mp4",
+      "prompt": "The two travellers walk slowly forward along the path, their cloaks swaying gently in the evening breeze, camera tracks slowly.",
+      "negative": "morphing, warping, flicker, distorted face, extra limbs, fast motion, text",
+      "seed": 1952,
+      "width": 832,
+      "height": 480,
+      "num_frames": 81,
+      "steps": 24,
+      "guidance": 5.0,
+      "fps": 24,
+      "model": "Wan-AI/Wan2.2-TI2V-5B-Diffusers"
+    },
+    {
+      "shot_id": "s04",
+      "key": "f337494b14f2",
+      "keyframe": "s04_09da00042f56.png",
+      "output": "s04_f337494b14f2.mp4",
+      "prompt": "She pours gently into the cup as hearth firelight dances on the walls, steam rises softly, camera stays still.",
+      "negative": "morphing, warping, flicker, distorted face, extra limbs, fast motion, text",
+      "seed": 1954,
+      "width": 832,
+      "height": 480,
+      "num_frames": 81,
+      "steps": 24,
+      "guidance": 5.0,
+      "fps": 24,
+      "model": "Wan-AI/Wan2.2-TI2V-5B-Diffusers"
+    },
+    {
+      "shot_id": "s05",
+      "key": "bb48e5f58f69",
+      "keyframe": "s05_36f324b35b44.png",
+      "output": "s05_bb48e5f58f69.mp4",
+      "prompt": "Firelight flickers softly across his face as his expression softens into a quiet smile, camera stays still.",
+      "negative": "morphing, warping, flicker, distorted face, extra limbs, fast motion, text",
+      "seed": 1955,
+      "width": 832,
+      "height": 480,
+      "num_frames": 81,
+      "steps": 24,
+      "guidance": 5.0,
+      "fps": 24,
+      "model": "Wan-AI/Wan2.2-TI2V-5B-Diffusers"
+    },
+    {
+      "shot_id": "s07",
+      "key": "d2afa4efd27c",
+      "keyframe": "s07_50bda4c118a1.png",
+      "output": "s07_d2afa4efd27c.mp4",
+      "prompt": "Morning mist drifts behind him as he turns slightly and smiles with quiet resolve, camera stays still.",
+      "negative": "morphing, warping, flicker, distorted face, extra limbs, fast motion, text",
+      "seed": 1957,
+      "width": 832,
+      "height": 480,
+      "num_frames": 81,
+      "steps": 24,
+      "guidance": 5.0,
+      "fps": 24,
+      "model": "Wan-AI/Wan2.2-TI2V-5B-Diffusers"
+    }
+  ]
+}

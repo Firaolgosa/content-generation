@@ -1,0 +1,15 @@
+{
+  "id": "firaolgosa19/heritage-ace-step",
+  "title": "heritage-ace-step",
+  "code_file": "ace_step.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [
+    "firaolgosa19/heritage-music-inputs"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

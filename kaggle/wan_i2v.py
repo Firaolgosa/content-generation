@@ -10,12 +10,15 @@ the model card recommends). Black/NaN frames are detected and logged, not silent
 """
 
 import json
+import os
 import subprocess
 import sys
 import time
 import traceback
 from datetime import UTC, datetime
 from pathlib import Path
+
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 START = time.time()
 BUDGET_S = 8 * 3600
@@ -54,9 +57,11 @@ print(f"{len(jobs)} jobs on {device_name} ({torch.cuda.device_count()} GPU), dty
 t_load = time.time()
 vae = AutoencoderKLWan.from_pretrained(model_id, subfolder="vae", torch_dtype=torch.float32)
 pipe = WanImageToVideoPipeline.from_pretrained(model_id, vae=vae, torch_dtype=dtype)
-pipe.enable_model_cpu_offload()
+pipe.enable_sequential_cpu_offload()
 if hasattr(pipe.vae, "enable_tiling"):
     pipe.vae.enable_tiling()
+if hasattr(pipe.vae, "enable_slicing"):
+    pipe.vae.enable_slicing()
 log({"item": "model_load", "model": model_id, "status": "ok", "device": device_name,
      "dtype": str(dtype), "latency_s": round(time.time() - t_load, 1)})
 

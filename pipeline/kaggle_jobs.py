@@ -43,9 +43,14 @@ KINDS: dict[str, dict[str, Any]] = {
 
 def _kaggle(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
     exe = shutil.which("kaggle") or str(Path(sys.executable).parent / "kaggle")
-    creds = require_env("KAGGLE_USERNAME", "KAGGLE_KEY")
+    from pipeline.common import load_env
+    load_env()
+    if os.environ.get("KAGGLE_API_TOKEN"):
+        creds = require_env("KAGGLE_USERNAME", "KAGGLE_API_TOKEN")
+    else:
+        creds = require_env("KAGGLE_USERNAME", "KAGGLE_KEY")
     env = {**os.environ, **creds}
-    if creds["KAGGLE_KEY"].startswith("KGAT_") and "KAGGLE_API_TOKEN" not in env:
+    if creds.get("KAGGLE_KEY", "").startswith("KGAT_") and "KAGGLE_API_TOKEN" not in env:
         env["KAGGLE_API_TOKEN"] = creds["KAGGLE_KEY"]
     proc = subprocess.run([exe, *args], capture_output=True, text=True, env=env, check=False)
     if check and proc.returncode != 0:
@@ -120,37 +125,37 @@ def status(kind: str) -> str:
     return out
 
 
-def pull(kind: str) -> int:
+def pull(kind: str, dest: Path | None = None) -> int:
     cfg = KINDS[kind]
     out_dir = BUILD / f"{kind}-output"
     shutil.rmtree(out_dir, ignore_errors=True)
     out_dir.mkdir(parents=True)
     _kaggle("kernels", "output", f"{_user()}/{cfg['kernel']}", "-p", str(out_dir))
-    dest: Path = cfg["dest"]
-    dest.mkdir(parents=True, exist_ok=True)
+    dest_dir: Path = dest if dest is not None else cfg["dest"]
+    dest_dir.mkdir(parents=True, exist_ok=True)
     moved = 0
     for f in out_dir.rglob(f"*{cfg['ext']}"):
-        shutil.copy2(f, dest / f.name)
+        shutil.copy2(f, dest_dir / f.name)
         moved += 1
     log_file = next(out_dir.rglob("kernel_runs.jsonl"), None)
     if log_file:
         for line in log_file.read_text(encoding="utf-8").splitlines():
             if line.strip():
                 log_event({**json.loads(line), "provider": "kaggle", "merged_from": "kernel"})
-    say(f"  pulled {moved} file(s) into {rel(dest)}")
+    say(f"  pulled {moved} file(s) into {rel(dest_dir)}")
     return moved
 
 
-def wait(kind: str) -> None:
+def wait(kind: str, dest: Path | None = None) -> None:
     started = time.time()
     while time.time() - started < MAX_WAIT_S:
         st = status(kind).lower()
         if "complete" in st:
-            pull(kind)
+            pull(kind, dest=dest)
             return
         if "error" in st or "cancel" in st:
             say("  kernel failed; pulling whatever it saved (see its log on kaggle.com)")
-            pull(kind)
+            pull(kind, dest=dest)
             raise SystemExit(1)
         time.sleep(POLL_S)
     raise SystemExit("timed out waiting for the kernel")
@@ -160,8 +165,15 @@ def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("action", choices=["push", "status", "pull", "wait"])
     ap.add_argument("kind", choices=list(KINDS))
+    ap.add_argument("--dest", type=Path, default=None,
+                    help="optional output directory for pull/wait (e.g. outputs/wan_kaggle)")
     args = ap.parse_args(argv)
-    {"push": push, "status": status, "pull": pull, "wait": wait}[args.action](args.kind)
+    if args.action == "pull":
+        pull(args.kind, dest=args.dest)
+    elif args.action == "wait":
+        wait(args.kind, dest=args.dest)
+    else:
+        {"push": push, "status": status}[args.action](args.kind)
     return 0
 
 

@@ -1,0 +1,15 @@
+{
+  "id": "firaolgosa19/heritage-wan-i2v",
+  "title": "heritage-wan-i2v",
+  "code_file": "wan_i2v.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [
+    "firaolgosa19/heritage-wan-inputs"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}
