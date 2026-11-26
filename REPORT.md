@@ -8,7 +8,7 @@
 
 ## 1. What We Set Out to Make and For Whom
 
-We built **The Night in Bekoji (`የበቆጂው ምሽት`)**, a 75-second Amharic-narrated heritage short film with English subtitles and an original AI-composed Ethiopian-inspired acoustic score, generated end-to-end from a single JSON contract (`storyboard.json`).
+We built **The Night in Bekoji **, a 75-second Amharic-narrated heritage short film with English subtitles and an original AI-composed Ethiopian-inspired acoustic score, generated end-to-end from a single JSON contract (`storyboard.json`).
 
 - **Story:** In **1950 E.C.** in **Bekoji**, my grandfather and his friend were travelling to see another young woman when night fell late. They stopped at a home along the road for shelter. Inside, by the warmth of the hearth, he met my grandmother (then 17 years old) for the first time—and by morning chose her over his original journey.
 - **Audience & Intent:** My family (parents, aunts, uncles, and cousins) watching on their phones in the family group chat (`9:16` vertical first), designed so they feel warmth, pride, and nostalgia remembering how their parents' and grandparents' story began.
@@ -33,11 +33,11 @@ Every model call, retry, failure, and cache hit is logged to `runs.jsonl`. Total
 ## 3. What We Learned From Our Audience
 
 - **User Test 1 (Radio Cut — `run_id: 20261125T125406Z-2802`):**  
-  *[INSERT 3+ AUDIENCE QUOTES & WHAT CHANGED IN `DESIGN.md`]*
+  <!-- *[INSERT 3+ AUDIENCE QUOTES & WHAT CHANGED IN `DESIGN.md`]* -->
 - **User Test 2 (Visual Rough Cut — `the-night-in-bekoji_9x16.mp4`):**
   1. **Anatomy artifact caught (`s07`):** A viewer spotted that in `s07_50bda4c118a1.png`, the young man's head was severed at the neck. We updated `s07`'s prompt to explicitly frame his full head, face, and shoulders (`seed: 2957` -> `s07_40b851668d4b.png`).
   2. **Character age bias caught (`grandmother`):** Viewers noted the grandmother looked too old for a 17-year-old at the time of the story (`s06_bb6ea3c9b799.png`). Removing the word `"grandmother"` from the image prompts and updating `characters[1].description` to `"A 17-year-old Ethiopian teenage girl..."` (`sheet_seed: 3051`) produced a natural 17-year-old portrait (`s06_016b1e61b700.png`).
-  *[INSERT ANY ADDITIONAL FAMILY FEEDBACK FROM YOUR FINAL SCREENING]*
+  <!-- *[INSERT ANY ADDITIONAL FAMILY FEEDBACK FROM YOUR FINAL SCREENING]* -->
 
 ---
 
