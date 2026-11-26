@@ -1,0 +1,40 @@
+{
+  "jobs": [
+    {
+      "cue_id": "theme",
+      "key": "f25dad3a2351",
+      "candidate": 0,
+      "output": "theme_f25dad3a2351_c0.wav",
+      "caption": "Gentle Ethiopian-inspired acoustic underscore, a solo krar plucking a slow nostalgic pentatonic tizita melody over warm soft string pads and a quiet masenqo drone, intimate, heartfelt, sparse, no percussion, instrumental",
+      "bpm": 72,
+      "keyscale": "D minor",
+      "duration": 90,
+      "seed": 4242,
+      "model": "ACE-Step/acestep-v15-turbo"
+    },
+    {
+      "cue_id": "theme",
+      "key": "f25dad3a2351",
+      "candidate": 1,
+      "output": "theme_f25dad3a2351_c1.wav",
+      "caption": "Gentle Ethiopian-inspired acoustic underscore, a solo krar plucking a slow nostalgic pentatonic tizita melody over warm soft string pads and a quiet masenqo drone, intimate, heartfelt, sparse, no percussion, instrumental",
+      "bpm": 72,
+      "keyscale": "D minor",
+      "duration": 90,
+      "seed": 4243,
+      "model": "ACE-Step/acestep-v15-turbo"
+    },
+    {
+      "cue_id": "theme",
+      "key": "f25dad3a2351",
+      "candidate": 2,
+      "output": "theme_f25dad3a2351_c2.wav",
+      "caption": "Gentle Ethiopian-inspired acoustic underscore, a solo krar plucking a slow nostalgic pentatonic tizita melody over warm soft string pads and a quiet masenqo drone, intimate, heartfelt, sparse, no percussion, instrumental",
+      "bpm": 72,
+      "keyscale": "D minor",
+      "duration": 90,
+      "seed": 4244,
+      "model": "ACE-Step/acestep-v15-turbo"
+    }
+  ]
+}

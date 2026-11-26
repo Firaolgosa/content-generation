@@ -33,8 +33,8 @@
     },
     {
       "id": "grandmother",
-      "description": "A young Ethiopian woman in her early twenties in 1950s highland attire, warm brown skin, braided hair partially covered by a white cotton netela shawl with a subtle woven tibeb border over a traditional white habesha kemis dress, calm graceful smile",
-      "sheet_seed": 2051,
+      "description": "A 17-year-old Ethiopian teenage girl in 1950s highland attire, very youthful smooth face, soft young features, warm brown skin, braided hair partially covered by a white cotton netela shawl over a traditional white habesha kemis dress, shy gentle smile, young girl, no wrinkles",
+      "sheet_seed": 3051,
       "real_person": false
     }
   ],
@@ -53,8 +53,8 @@
     "wan": {
       "width": 832,
       "height": 480,
-      "num_frames": 121,
-      "steps": 30,
+      "num_frames": 81,
+      "steps": 24,
       "guidance": 5.0,
       "negative": "morphing, warping, flicker, distorted face, extra limbs, fast motion, text"
     }
@@ -79,8 +79,8 @@
         "keyscale": "D minor",
         "seed": 4242,
         "candidates": 3,
-        "chosen": null,
-        "reason": "Placeholder until the three candidates are auditioned under the narration."
+        "chosen": 2,
+        "reason": "Selected candidate c2 (seed 4244, -16.2 LUFS, LRA 8.9 LU): lowest integrated loudness and clean dynamic contour for sitting under Amharic narration."
       }
     ]
   },
@@ -151,7 +151,7 @@
       "reason": "Establishes the warmth and traditional Ethiopian hospitality inside the home.",
       "shot_size": "medium_close",
       "characters": ["grandmother"],
-      "image_prompt": "Inside a warm hearth-lit Ethiopian home, the grandmother pours warm coffee from a black clay jebena into small cups for guests seated on low wooden stools, soft smoke rising in golden firelight",
+      "image_prompt": "Inside a warm hearth-lit Ethiopian home, the 17-year-old young woman pours warm coffee from a black clay jebena into small cups for guests seated on low wooden stools, soft smoke rising in golden firelight",
       "seed": 1954,
       "motion_prompt": "She pours gently into the cup as hearth firelight dances on the walls, steam rises softly, camera stays still.",
       "camera": "static",
@@ -183,8 +183,8 @@
       "reason": "Focuses on her calm grace and warmth, showing emotionally why he forgot his original plan.",
       "shot_size": "close_up",
       "characters": ["grandmother"],
-      "image_prompt": "Close-up portrait of the grandmother smiling modestly in warm hearth light, her white cotton netela draped gracefully over her shoulders",
-      "seed": 1956,
+      "image_prompt": "Close-up portrait of the 17-year-old young woman smiling shyly in warm hearth light, youthful smooth skin, her white cotton netela draped gracefully over her shoulders",
+      "seed": 2956,
       "motion_prompt": "Warm firelight glows gently on her face as she smiles softly, camera pushes in very slowly.",
       "camera": "push_in",
       "video": "kenburns",
@@ -199,8 +199,8 @@
       "reason": "Dawn breaks in Bekoji; visually marks his decision to choose her instead of continuing.",
       "shot_size": "medium",
       "characters": ["grandfather"],
-      "image_prompt": "At golden misty dawn outside the home in Bekoji, the grandfather stands wrapped in his shamma, looking back warmly toward the doorway as morning sun breaks over the hills",
-      "seed": 1957,
+      "image_prompt": "Medium shot showing his full head, face, and shoulders clearly in the centre of the frame: at golden misty dawn outside the home in Bekoji, the young man stands wrapped in his shamma, looking back warmly toward the doorway as morning sun breaks over the hills",
+      "seed": 2957,
       "motion_prompt": "Morning mist drifts behind him as he turns slightly and smiles with quiet resolve, camera stays still.",
       "camera": "static",
       "video": "wan",
@@ -215,7 +215,7 @@
       "reason": "Time compression: shows them walking together across the sunlit Bekoji hills.",
       "shot_size": "wide",
       "characters": ["grandfather", "grandmother"],
-      "image_prompt": "Wide shot of the grandfather and grandmother walking side by side along a sunlit green ridge in Bekoji, tall eucalyptus trees and rolling highlands bathed in warm morning gold",
+      "image_prompt": "Wide shot of the young man and the 17-year-old young woman walking side by side along a sunlit green ridge in Bekoji, tall eucalyptus trees and rolling highlands bathed in warm morning gold",
       "seed": 1958,
       "motion_prompt": "Sunlight shimmers across the green hills, camera pans slowly to the right.",
       "camera": "pan_right",
