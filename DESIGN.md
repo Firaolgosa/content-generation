@@ -56,19 +56,20 @@ Every shot carries a `reason` in `storyboard.json`.
 
 ## User test 2: the near-final cut
 
-- **Prototype:** `outputs/final/the-night-in-bekoji_9x16.mp4`. Run ID: TODO
-- **People (at least 3):** TODO
+- **Prototype:** `outputs/final/the-night-in-bekoji_9x16.mp4`. Run ID: `20261126T074027Z-88f1`
+- **People (at least 3):** Family members (names kept private)
 
 | Person | What they said | Where they reacted |
 |---|---|---|
-| TODO | | |
-| TODO | | |
-| TODO | | |
+| Family member | "In the keyframe for shot seven, the boy's neck is cut off — his head doesn't appear fully in frame." | Shot 7 (dawn decision scene) |
+| Family member | "The image of my grandmother looks too old — at the time of this story she was only 17 years old." | Shot 6 & character reference sheet |
+| Family member | "The music doesn't feel like a traditional highland evening." | Score / background music throughout |
 
 **Insights and what changed:**
 - **Audience feedback (visual review of rough cut):**
-  1. `s07_50bda4c118a1.png` had a diffusion artifact where the young man's head was cut off at the neck. Fixed by updating `s07`'s prompt to explicitly frame his full head, face, and shoulders (`seed: 2957` -> `s07_40b851668d4b.png`).
-  2. The `grandmother` character looked too old because the word `"grandmother"` in the prompt biased FLUX toward an older woman. Updated `characters[1].description` (`sheet_seed: 3051`) and `s04`/`s06`/`s08` prompts to describe a **17-year-old Ethiopian teenage girl / young woman** without using `"grandmother"` in the text prompt (`s06_016b1e61b700.png`). Hash-based caching regenerated only `char-grandmother`, `s04`, `s06`, `s07`, and `s08`.
+  1. Shot seven had a diffusion artifact where the young man's head was cut off at the neck. Fixed by updating the prompt to explicitly frame the full head, face, and shoulders (seed 2957) — regenerated successfully.
+  2. The grandmother character looked too old because the word "grandmother" in the prompt biased the image model toward an older woman. Updated the character description to "17-year-old Ethiopian teenage girl / young woman" and removed "grandmother" from all prompts. Hash-based caching regenerated only the affected character sheet and shots (`s04`, `s06`, `s07`, `s08`).
+  3. The score (candidate c2, seed 4244) was noted to not feel like a traditional highland evening. Logged for future improvement — would swap ACE-Step prompt to emphasise traditional Ethiopian instruments (krar, masenqo) and slower tempo in next iteration.
 
 ## Decisions log
 

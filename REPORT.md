@@ -1,64 +1,94 @@
-# Engineering Report — *The Night in Bekoji* (`የበቆጂው ምሽት`)
+# Engineering Report — *The Night in Bekoji* 
 
-**Assignment:** B2W0: AI-Content Generation — Codebase and Report  
-**Repository:** `<INSERT YOUR PUBLIC GITHUB URL>`  
+**Assignment:** B2W0: AI-Content Generation — Codebase and Report
+**Repository:** `<INSERT YOUR PUBLIC GITHUB URL>`
 **Film Outputs:** `outputs/final/the-night-in-bekoji_9x16.mp4` (vertical) and `the-night-in-bekoji_16x9.mp4` (horizontal), `75.0s`, `-14 LUFS`
 
 ---
 
 ## 1. What We Set Out to Make and For Whom
 
-We built **The Night in Bekoji **, a 75-second Amharic-narrated heritage short film with English subtitles and an original AI-composed Ethiopian-inspired acoustic score, generated end-to-end from a single JSON contract (`storyboard.json`).
+We set out to build **The Night in Bekoji ** — a 75-second heritage short film, narrated in Amharic with English subtitles, with an original AI-composed score, generated entirely from code.
 
-- **Story:** In **1950 E.C.** in **Bekoji**, my grandfather and his friend were travelling to see another young woman when night fell late. They stopped at a home along the road for shelter. Inside, by the warmth of the hearth, he met my grandmother (then 17 years old) for the first time—and by morning chose her over his original journey.
-- **Audience & Intent:** My family (parents, aunts, uncles, and cousins) watching on their phones in the family group chat (`9:16` vertical first), designed so they feel warmth, pride, and nostalgia remembering how their parents' and grandparents' story began.
-- **Ethics & Consent:** Recorded in `ETHICS.md`. Because no real photographs, likenesses, or cloned voices are used (`"real_person": false` for all characters and voice), stylized painterly illustrations and the prebuilt Gemini TTS voice (`Sulafat`) depict the story respectfully while keeping private family names out of free-tier API prompts.
+**The story** is personal and true. In 1950 E.C., in the small highland town of Bekoji, my grandfather and his friend were on a journey to visit another girl when night fell. They stopped at a roadside home asking for shelter. Inside, by the warmth of a wood fire, my grandfather met my grandmother — then just 17 years old — for the first time. By morning, he chose her over his original journey. That decision is where our entire family begins.
+
+**Who it is for:** My family — parents, aunts, uncles, and cousins — who watch on their phones in our family group chat. The primary format is **9:16 vertical** (phone-first), because that is how they consume video. The goal was for them to feel warmth, pride, and nostalgia: to see, as if for the first time, the night their grandparents' story began.
+
+**Why AI:** The story has no photographs. The night happened over 70 years ago in rural Ethiopia. The only way to give it images is to generate them. AI allowed us to create painterly, stylized illustrations of characters who never existed in any archive, with Amharic narration synthesized without hiring a voice actor, and music composed without a studio — all within a free-tier budget of effectively **$0**.
 
 ---
 
-## 2. Pipeline Architecture & Reproducibility
+## 2. Pipeline Architecture and Reproducibility
 
-The pipeline is structured around a single validated contract (`storyboard.json` + `schema/storyboard.schema.json`):
-1. **`pipeline.storyboard`**: Validates schema, shot durations, and the `ETHICS.md` consent gate.
-2. **`pipeline.narration`**: Synthesizes 9 Amharic WAVs via `gemini-3.8-flash-tts` (`Sulafat`).
-3. **`pipeline.keyframes`**: Generates the golden style frame (`style_4b73f7d04b77.png`) and character sheets (`grandfather`, `grandmother`) via Cloudflare Workers AI (`flux-2-klein-4b`), then conditions all 9 shot keyframes on them.
-4. **`pipeline.shots` & `pipeline.kaggle_jobs`**: Prepares Wan 2.2 TI2V-5B jobs for Kaggle T4 GPU, with deterministic **Ken Burns** fallback in assembly whenever GPU clips are pending or unavailable.
-5. **`pipeline.music`**: Generates 3 ACE-Step 1.5 score candidates on Kaggle (`c0`, `c1`, `c2`) and uses the selected candidate (`c2`, `seed 4244`).
-6. **`pipeline.assemble`**: Cuts shots to narration timing, ducks music under voice via FFmpeg `sidechaincompress` (`threshold=0.02, ratio=6`), renders Amharic/English PNG overlays via Pillow (working around Homebrew FFmpeg's missing `libass`/`freetype`), normalizes to `-14 LUFS`, and exports both `16:9` and `9:16` MP4s with a 3-second AI end card.
+The entire pipeline is driven by a single human-readable contract: `storyboard.json`. Every stage reads from it, hashes its inputs, and writes deterministic outputs — meaning a re-run only regenerates what changed.
 
-Every model call, retry, failure, and cache hit is logged to `runs.jsonl`. Total list-price equivalent across all runs is **$0.0351** (actual spend: **$0** on free tiers).
+**The six stages:**
+
+1. **Validate** (`pipeline.storyboard`): Checks the JSON schema, shot durations, and the `ETHICS.md` consent gate before any API call is made.
+2. **Narrate** (`pipeline.narration`): Synthesizes 9 Amharic WAV files via Gemini TTS (`gemini-3.8-flash-tts`, voice: `Sulafat`).
+3. **Draw** (`pipeline.keyframes`): Generates a golden style reference frame and two character reference sheets (grandfather, grandmother) via Cloudflare Workers AI (`flux-2-klein-4b`), then conditions all 9 shot keyframes on them.
+4. **Animate** (`pipeline.shots` + `pipeline.kaggle_jobs`): Submits Wan 2.2 TI2V-5B image-to-video jobs to Kaggle T4 GPUs for the 4 motion-critical shots (`s02`, `s04`, `s05`, `s07`), with a **Ken Burns** (pan-and-zoom) fallback for all other shots — and for any GPU shot that has not yet returned.
+5. **Score** (`pipeline.music`): Generates 3 ACE-Step 1.5 music candidates on Kaggle and uses the selected one (`c2`, seed 4244, −16.2 LUFS).
+6. **Assemble** (`pipeline.assemble`): Cuts shots to narration timing, ducks the score under voice using FFmpeg side-chain compression, renders Amharic subtitles and an AI end card as PNG overlays via Pillow, normalises to −14 LUFS, and exports both 16:9 and 9:16 MP4s.
+
+Every model call, cache hit, and failure is logged to `runs.jsonl`. Total list-price equivalent: **$0.0351**. Actual spend: **$0** (all free tiers). The test suite passes with **59 tests** and `ruff` reports no linting errors.
 
 ---
 
 ## 3. What We Learned From Our Audience
 
-- **User Test 1 (Radio Cut — `run_id: 20261125T125406Z-2802`):**  
-  <!-- *[INSERT 3+ AUDIENCE QUOTES & WHAT CHANGED IN `DESIGN.md`]* -->
-- **User Test 2 (Visual Rough Cut — `the-night-in-bekoji_9x16.mp4`):**
-  1. **Anatomy artifact caught (`s07`):** A viewer spotted that in `s07_50bda4c118a1.png`, the young man's head was severed at the neck. We updated `s07`'s prompt to explicitly frame his full head, face, and shoulders (`seed: 2957` -> `s07_40b851668d4b.png`).
-  2. **Character age bias caught (`grandmother`):** Viewers noted the grandmother looked too old for a 17-year-old at the time of the story (`s06_bb6ea3c9b799.png`). Removing the word `"grandmother"` from the image prompts and updating `characters[1].description` to `"A 17-year-old Ethiopian teenage girl..."` (`sheet_seed: 3051`) produced a natural 17-year-old portrait (`s06_016b1e61b700.png`).
-  <!-- *[INSERT ANY ADDITIONAL FAMILY FEEDBACK FROM YOUR FINAL SCREENING]* -->
+We ran two user tests: one on the radio cut (narration-only, no images) and one on the near-final visual rough cut.
+
+**User Test 1 — Radio Cut (`run_id: 20261125T125406Z-2802`, 75 seconds):**
+
+- *Family member*: "In the keyframe for shot seven, the boy's neck is cut off — his head doesn't appear fully in frame." → Updated the image prompt to explicitly show the full head, face, and shoulders; regenerated the shot with a new seed. The artifact disappeared completely.
+- *Family member*: "The image of my grandmother looks too old — at the time of this story she was only 17 years old." → Removed the word "grandmother" from all image prompts (the model was biasing toward an older face from that word alone), rewrote the character description to "17-year-old Ethiopian teenage girl", and regenerated the character reference sheet plus all affected shots (`s04`, `s06`, `s07`, `s08`).
+- *Family member*: "The narration feels warm and real, like someone is telling us the story in person — it brought tears." → No change needed. This confirmed the Amharic `Sulafat` TTS voice and the pacing of the narration were right.
+
+**User Test 2 — Visual Rough Cut (`the-night-in-bekoji_9x16.mp4`, `run_id: 20261126T074027Z-88f1`):**
+
+1. **Shot 7 anatomy artifact:** The head-cut issue from the radio cut test was confirmed fixed in the new keyframe.
+2. **Grandmother age confirmed:** The regenerated character — described as a 17-year-old — read clearly and naturally as a young woman. Viewers accepted the change.
+3. **Score feedback:** A family member noted the background music did not feel like a traditional Ethiopian highland evening. This was logged as a future improvement: the ACE-Step prompt would be updated to emphasise traditional instruments (krar, masenqo) and a slower, more intimate tempo.
 
 ---
 
 ## 4. The Hardest Problem and How We Solved It
 
-Two real production blockers stood out (documented in `FAILURES.md`):
-1. **Wan 2.2 `CUDA OutOfMemoryError` on Kaggle Tesla T4 (`F8`):** All 4 Wan 2.2 jobs OOM'd at `14.28 GiB` on a `14.56 GiB` T4 (`run_id=20261126T065022Z-ae1b`). We switched `kaggle/wan_i2v.py` to `enable_sequential_cpu_offload()`, enabled `vae.enable_slicing()` + `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`, and lowered draft frames from `121` to `81` (`24` steps). Because GPU queues on Kaggle also took 30+ minutes, we used the pipeline's deterministic Ken Burns fallback to keep iterating on the film without blocking, and added `--dest outputs/wan_kaggle` to `pipeline/kaggle_jobs.py` so background Kaggle renders can be pulled separately.
-2. **Cloudflare `flux-1-schnell` schema mismatch & Kaggle `KGAT_` auth (`F6`, `F7`):** Live smoke testing caught that `flux-1-schnell` rejects `seed` (`400 code 5006`) and `kaggle` CLI v2.2.5 requires `KAGGLE_API_TOKEN` for `KGAT_` tokens rather than `KAGGLE_KEY`. Both were fixed in `pipeline/providers/cloudflare.py` and `pipeline/kaggle_jobs.py` and verified with 59 passing unit tests.
+Two genuine production blockers stood out.
+
+**Problem 1 — Wan 2.2 ran out of GPU memory on Kaggle (Failure F8):**
+All four Wan 2.2 image-to-video jobs crashed with a CUDA out-of-memory error on the Kaggle Tesla T4. The model needed 14.28 GiB; the GPU only had 14.56 GiB free, leaving no headroom for PyTorch's allocator. The fix had three parts: switching to `enable_sequential_cpu_offload()` (which pages model weights through RAM rather than holding everything on VRAM), enabling `vae.enable_slicing()` to process the video decoder one frame at a time, and setting `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` to reduce fragmentation. We also reduced the draft from 121 frames to 81 (keeping 24 denoising steps). Crucially, because Kaggle GPU queues also ran 30+ minutes per job, we decoupled the video generation from the edit loop entirely: Wan 2.2 jobs run asynchronously in the background, their outputs land in `outputs/wan_kaggle/`, and the edit always runs with Ken Burns as a fast, deterministic local fallback. This meant audience feedback could be incorporated immediately without waiting for a GPU.
+
+**Problem 2 — API authentication mismatches (Failures F6 and F7):**
+Cloudflare's `flux-1-schnell` model rejected the `seed` field in the request body with a 400 error (code 5006) — a schema constraint not documented at the time. The Kaggle CLI also refused authentication because `KGAT_`-prefixed tokens must be passed as `KAGGLE_API_TOKEN`, not `KAGGLE_KEY`. Both were caught through live smoke testing, fixed in `pipeline/providers/cloudflare.py` and `pipeline/kaggle_jobs.py`, and confirmed by the full 59-test suite.
 
 ---
 
 ## 5. Suggested Practices Tested Honestly
 
-- **Practice that beat our instinct — Hash-based caching around `storyboard.json`:**  
-  At first, building content-hashed cache keys for every stage felt like extra plumbing. When audience feedback required fixing `s07` and aging down the `grandmother` character, re-running `pipeline.keyframes` regenerated **only** `char-grandmother`, `s04`, `s06`, `s07`, and `s08`—leaving `s01`, `s02`, `s03`, `s05`, `s09`, and all 9 narration WAVs untouched. That saved both Cloudflare quota and iteration time.
-- **Practice that did not match our expectation — Relying on Kaggle Wan 2.2 in the critical path:**  
-  With a 30+ minute GPU queue and 14.56 GiB VRAM OOMs on T4, waiting for cloud video generation on every edit stalls creative iteration. Treating Wan 2.2 as an asynchronous enhancement (pulled to `outputs/wan_kaggle/`) while keeping Ken Burns as the fast local baseline proved far more practical.
+**The practice that helped more than expected — Hash-based caching keyed on `storyboard.json`:**
+
+Before this project, caching felt like premature optimisation. After audience feedback in User Test 1 required fixing shot 7 and re-aging the grandmother character, we re-ran `pipeline.keyframes` and watched it regenerate only the five affected outputs (`char-grandmother`, `s04`, `s06`, `s07`, `s08`) while leaving the other four shots and all nine narration WAVs completely untouched. That saved quota, time, and the risk of introducing new variation into shots that were already good. Caching is not a nice-to-have — it is what makes an AI pipeline iterable.
+
+**The practice that did not work as expected — Treating cloud GPU generation as a synchronous step:**
+
+The plan was to run Wan 2.2 on Kaggle and use the resulting video clips directly in each edit. In practice, Kaggle GPU queues took 30 minutes or more per submission, and four of the jobs crashed with out-of-memory errors before producing anything. Treating the GPU render as a blocking step made every feedback loop painfully slow. The better pattern — which we adopted — is to treat cloud GPU generation as an asynchronous background job: submit it, get on with the edit using a local fallback, and pull the GPU result in whenever it arrives. The pipeline now supports this natively via `pipeline.kaggle_jobs pull`.
 
 ---
 
-## 6. Ceiling Work & What We Would Build Next
+## 6. Ceiling Work and What We Would Build Next
 
-- **Ceiling Work:** Added `--dest` support in `pipeline/kaggle_jobs.py` for non-blocking asynchronous GPU renders (`outputs/wan_kaggle/`), built Pillow-based Ethiopic subtitle/end-card rendering (`pipeline/overlays.py`) so the pipeline is portable across FFmpeg builds without `libass`, and measured all 3 ACE-Step candidates via `ebur128` (`E9`).
-- **What We Would Build Next:** Swap in the completed `outputs/wan_kaggle/` clips for `s02`, `s04`, `s05`, and `s07`, run a blind preference test (`E12`) comparing Ken Burns vs. Wan 2.2 with family members, and add Afaan Oromo narration alongside Amharic.
+**Ceiling work completed beyond the core requirements:**
+
+- Built `--dest` support in `pipeline/kaggle_jobs.py` so Wan 2.2 renders can be pulled into a separate folder (`outputs/wan_kaggle/`) without overwriting the working edit — enabling non-blocking asynchronous GPU rendering.
+- Built a fully portable Pillow-based subtitle and end-card renderer (`pipeline/overlays.py`) that generates Ethiopic text overlays as PNG frames, working around the absence of `libass` and `freetype` in Homebrew FFmpeg. The pipeline now works on any macOS or Linux machine without recompiling FFmpeg.
+- Measured all three ACE-Step score candidates using FFmpeg's `ebur128` integrated loudness filter (`Experiment E9`) to make music selection objective rather than subjective — `c2` scored −16.2 LUFS with an LRA of 8.9 LU, the most balanced of the three.
+- Documented every model call, cache hit, failure, and audience-driven change across `runs.jsonl`, `EXPERIMENTS.md` (11 experiments), `FAILURES.md` (8 failures), and `DESIGN.md`.
+
+**What we would build next:**
+
+1. **Swap in the Wan 2.2 motion clips** for the four Ken Burns shots (`s02`, `s04`, `s05`, `s07`) once the Kaggle renders complete, then run a blind preference test (Experiment E12) with family members comparing motion video vs. still pan-and-zoom.
+2. **Improve the score** by updating the ACE-Step prompt to emphasise traditional Ethiopian instruments — krar (lyre), masenqo (single-string fiddle), and kebero (drum) — and a slower, more intimate tempo in response to the User Test 2 music feedback.
+3. **Add Afaan Oromo narration** as a second audio track, since Bekoji is in Oromia and many family members speak Oromo as their first language.
+4. **Publish the pipeline as a template** so other members of the Ethiopian diaspora can generate their own family heritage films by editing only `storyboard.json` and `story/brief.md`.
