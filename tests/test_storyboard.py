@@ -73,6 +73,7 @@ def test_image_prompt_appends_character_and_style(sb):
 
 
 def test_warnings_flag_placeholder_and_length(sb):
+    sb["status"] = "placeholder"
     sb["shots"][0]["duration_s"] = 15
     for s in sb["shots"]:
         s["duration_s"] = 15

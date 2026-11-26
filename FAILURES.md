@@ -50,10 +50,11 @@ Format: **symptom** → **cause** → **tried** → **resolution** → **evidenc
 - **Resolution:** Re-run `pipeline.smoke` (skipping Kaggle until configured) or retry when demand subsides.
 - **Evidence:** `runs.jsonl` (`run_id: 20261125T121125Z-30bc`, `item=gemini_text` & `item=gemini_tts`).
 
-### F7. Kaggle credentials not configured in `.env` (2026-11-25)
-- **Symptom:** `kaggle` smoke check failed with `Missing environment variable(s): KAGGLE_USERNAME, KAGGLE_KEY`.
-- **Cause:** `.env` currently has `GEMINI_API_KEY`, `CLOUDFLARE_ACCOUNT_ID`, and `CLOUDFLARE_API_TOKEN`, but not `KAGGLE_USERNAME` and `KAGGLE_KEY`.
-- **Resolution:** Add `KAGGLE_USERNAME` and `KAGGLE_KEY` to `.env` (from Kaggle Account Settings -> API -> Create New Token) when ready for Phase 2 (Wan 2.2 / ACE-Step 1.5).
+### F7. Kaggle `KGAT_` token not recognized under `KAGGLE_KEY` (2026-11-25)
+- **Symptom:** After adding `KAGGLE_USERNAME` and a `KGAT_...` token as `KAGGLE_KEY` in `.env`, `pipeline.smoke` failed with `Authentication required to call the Kaggle API`.
+- **Cause:** `kaggle` CLI v2.2.5 expects new `KGAT_` API tokens in `KAGGLE_API_TOKEN`, while `KAGGLE_KEY` is only used for legacy 32-char hex keys.
+- **Resolution:** Updated `_kaggle()` in [pipeline/kaggle_jobs.py](pipeline/kaggle_jobs.py) to automatically map `KAGGLE_KEY` -> `KAGGLE_API_TOKEN` in the subprocess environment whenever `KAGGLE_KEY` starts with `KGAT_`.
+- **Evidence:** `runs.jsonl` (`stage=smoke`, `item=kaggle`, `status=ok`, `detail="auth ok (3 lines)"`).
 
 <!-- Next entries: quota hits, OOM on the T4, identity drift across keyframes, Amharic
      pronunciation errors in TTS, black frames from fp16 on Turing, ... -->

@@ -43,7 +43,10 @@ KINDS: dict[str, dict[str, Any]] = {
 
 def _kaggle(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
     exe = shutil.which("kaggle") or str(Path(sys.executable).parent / "kaggle")
-    env = {**os.environ, **require_env("KAGGLE_USERNAME", "KAGGLE_KEY")}
+    creds = require_env("KAGGLE_USERNAME", "KAGGLE_KEY")
+    env = {**os.environ, **creds}
+    if creds["KAGGLE_KEY"].startswith("KGAT_") and "KAGGLE_API_TOKEN" not in env:
+        env["KAGGLE_API_TOKEN"] = creds["KAGGLE_KEY"]
     proc = subprocess.run([exe, *args], capture_output=True, text=True, env=env, check=False)
     if check and proc.returncode != 0:
         raise SystemExit(f"kaggle {' '.join(args)} failed:\n{proc.stdout}\n{proc.stderr}")

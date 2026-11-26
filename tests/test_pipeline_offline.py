@@ -117,8 +117,9 @@ def test_editing_a_character_regenerates_only_their_shots(studio):
     before = calls["flux2"]
     sb["characters"][0]["description"] += " She wears silver earrings."
     keyframes.run(sb)
-    with_char = sum(1 for s in sb["shots"] if s.get("characters"))
-    assert calls["flux2"] - before == 1 + with_char  # new sheet + the shots she appears in
+    cid = sb["characters"][0]["id"]
+    with_char = sum(1 for s in sb["shots"] if cid in s.get("characters", []))
+    assert calls["flux2"] - before == 1 + with_char  # new sheet + the shots they appear in
 
 
 def test_editing_one_narration_line_regenerates_one_wav(studio):
